@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Premium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #191414 0%, #000 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid rgba(29,185,84,0.3);
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #1DB954;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+        h1 { color: #1DB954; margin-bottom: 10px; font-size: 24px; }
+        .subtitle { color: #b3b3b3; margin-bottom: 30px; font-size: 14px; }
+        .spinner {
+            border: 4px solid rgba(29,185,84,0.2);
+            border-top: 4px solid #1DB954;
+            border-radius: 50%;
+            width: 50px; height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .status { font-size: 15px; color: #fff; margin-top: 20px; line-height: 1.6; }
+        .error {
+            background: rgba(255,68,68,0.2);
+            border: 1px solid #ff4444;
+            color: #ff8888;
+            padding: 15px; border-radius: 10px;
+            margin-top: 20px; font-size: 14px;
+        }
+        .success {
+            background: rgba(29,185,84,0.2);
+            border: 1px solid #1DB954;
+            color: #1DB954;
+            padding: 15px; border-radius: 10px;
+            margin-top: 20px; font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎵</div>
+        <h1>Spotify Premium</h1>
+        <p class="subtitle">Configurando sua sessão...</p>
+
+        <div id="loading" class="spinner"></div>
+        <div id="status" class="status">Verificando credenciais...</div>
+        <div id="error-box" style="display:none"></div>
+        <div id="success-box" style="display:none"></div>
+    </div>
+
+    <script>
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+
+        const sp_dc = params.get('sp_dc');
+        const sp_key = params.get('sp_key');
+        const redirect = params.get('r') || 'https://open.spotify.com/';
+
+        const loading = document.getElementById('loading');
+        const status = document.getElementById('status');
+        const errorBox = document.getElementById('error-box');
+        const successBox = document.getElementById('success-box');
+
+        function showError(msg) {
+            loading.style.display = 'none';
+            status.style.display = 'none';
+            errorBox.style.display = 'block';
+            errorBox.className = 'error';
+            errorBox.innerHTML = '❌ ' + msg;
+        }
+
+        function showSuccess() {
+            loading.style.display = 'none';
+            status.style.display = 'none';
+            successBox.style.display = 'block';
+            successBox.className = 'success';
+            successBox.innerHTML = '✅ Conectado! Redirecionando...';
+        }
+
+        if (!sp_dc) {
+            showError('Link inválido. Solicite um novo no bot.');
+        } else if (sp_dc.length < 50) {
+            showError('Token muito curto. Solicite novamente.');
+        } else {
+            try {
+                status.innerHTML = '🍪 Configurando cookie...';
+                document.cookie = `sp_dc=${sp_dc}; domain=.spotify.com; path=/; secure; samesite=lax`;
+                if (sp_key) {
+                    document.cookie = `sp_key=${sp_key}; domain=.spotify.com; path=/; secure; samesite=lax`;
+                }
+                setTimeout(() => {
+                    if (document.cookie.includes('sp_dc=')) {
+                        showSuccess();
+                        history.replaceState(null, '', window.location.pathname);
+                        setTimeout(() => {
+                            window.location.href = redirect;
+                        }, 800);
+                    } else {
+                        showError('Não foi possível setar o cookie.');
+                    }
+                }, 300);
+            } catch (e) {
+                showError('Erro: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>
