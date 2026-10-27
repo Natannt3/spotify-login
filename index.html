@@ -3,232 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify Premium - Acesso</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Spotify Premium - Acesso Rápido</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --spotify-green: #1DB954;
-            --spotify-black: #191414;
-            --spotify-dark: #121212;
-            --spotify-gray: #b3b3b3;
+            --spotify-hover: #1ED760;
+            --bg-dark: #121212;
+            --bg-card: rgba(25, 20, 20, 0.7);
+            --text-muted: #a7a7a7;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body {
-            background: linear-gradient(135deg, var(--spotify-black) 0%, #000 100%);
-            color: #fff; min-height: 100vh; display: flex;
-            align-items: center; justify-content: center; padding: 20px;
-            overflow-x: hidden;
+            background-color: var(--bg-dark);
+            color: #fff; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px; overflow-x: hidden;
         }
 
         /* Fundo animado */
-        .bg-animation {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; overflow: hidden;
+        .bg-glow {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100vw; height: 100vh; z-index: -1;
+            background: radial-gradient(circle at 50% 0%, rgba(29, 185, 84, 0.15) 0%, transparent 60%);
         }
-        .circle {
-            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
-            animation: float 10s infinite ease-in-out alternate;
-        }
-        .circle-1 { width: 300px; height: 300px; background: var(--spotify-green); top: -100px; left: -100px; }
-        .circle-2 { width: 400px; height: 400px; background: #4B0082; bottom: -150px; right: -100px; animation-delay: -5s; }
-        @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(50px, 50px); } }
 
-        .container {
-            background: rgba(25, 20, 20, 0.6);
+        .card {
+            background: var(--bg-card);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px; padding: 40px 30px;
-            max-width: 420px; width: 100%; text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px; padding: 40px 24px;
+            max-width: 400px; width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .logo-container {
-            width: 90px; height: 90px; background: var(--spotify-green);
-            border-radius: 50%; margin: 0 auto 20px;
+            width: 80px; height: 80px;
+            background: var(--spotify-green); border-radius: 50%;
+            margin: 0 auto 20px;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 30px rgba(29, 185, 84, 0.4);
-            animation: pulse 2s infinite;
+            box-shadow: 0 0 30px rgba(29, 185, 84, 0.3);
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .logo-container svg { width: 50px; height: 50px; fill: #000; }
+        .logo-container svg { width: 45px; height: 45px; fill: #000; }
 
-        h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
-        .subtitle { color: var(--spotify-gray); font-size: 14px; margin-bottom: 30px; }
+        h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+        .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 30px; font-weight: 400; }
 
         /* Spinner */
         .spinner {
-            width: 40px; height: 40px; border: 4px solid rgba(29,185,84,0.2);
-            border-top: 4px solid var(--spotify-green); border-radius: 50%;
-            animation: spin 1s linear infinite; margin: 0 auto 20px;
+            width: 36px; height: 36px;
+            border: 3px solid rgba(29,185,84,0.2);
+            border-top-color: var(--spotify-green);
+            border-radius: 50%; margin: 0 auto 20px;
+            animation: spin 0.8s linear infinite;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Botões e Áreas de Fallback */
-        .fallback-box {
-            display: none; background: rgba(255,255,255,0.05);
+        /* Área de Fallback */
+        .fallback {
+            display: none;
+            background: rgba(0,0,0,0.3);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px; padding: 20px; margin-top: 20px;
-            text-align: left; animation: fadeIn 0.5s ease;
+            border-radius: 16px; padding: 20px;
+            text-align: left; animation: fadeIn 0.4s ease;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .alert-title { color: #FFA500; font-size: 14px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        .alert-text { color: #ddd; font-size: 13px; line-height: 1.5; margin-bottom: 15px; }
+        .alert-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; color: #FFA500; font-weight: 700; font-size: 14px; }
+        .alert-text { font-size: 13px; color: #ddd; line-height: 1.5; margin-bottom: 15px; }
 
         .btn {
             display: flex; align-items: center; justify-content: center; gap: 8px;
             width: 100%; padding: 14px; border-radius: 12px; border: none;
-            font-size: 14px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s; text-decoration: none;
+            font-size: 15px; font-weight: 700; cursor: pointer;
+            transition: all 0.2s; text-decoration: none; margin-bottom: 10px;
         }
         .btn-primary { background: var(--spotify-green); color: #000; }
-        .btn-primary:hover { background: #1ED760; transform: scale(1.02); }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; margin-top: 10px; }
-        .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+        .btn-primary:active { background: var(--spotify-hover); transform: scale(0.98); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn-secondary:active { background: rgba(255,255,255,0.2); transform: scale(0.98); }
 
+        .steps { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .steps b { color: #fff; }
+
+        /* Toast (Notificação) */
         .toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: var(--spotify-green); color: #000; padding: 12px 24px;
-            border-radius: 30px; font-weight: 600; font-size: 14px;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1000;
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--spotify-green); color: #000;
+            padding: 12px 24px; border-radius: 30px;
+            font-weight: 700; font-size: 14px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000; pointer-events: none;
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
-    <div class="bg-animation">
-        <div class="circle circle-1"></div>
-        <div class="circle circle-2"></div>
-    </div>
+    <div class="bg-glow"></div>
 
-    <div class="container" id="main-card">
+    <div class="card">
         <div class="logo-container">
             <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.24 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
         </div>
         
         <h1>Spotify Premium</h1>
-        <p class="subtitle" id="status">Autenticando sua conta...</p>
+        <p class="subtitle" id="status">Preparando seu acesso...</p>
         
         <div id="loading" class="spinner"></div>
 
-        <!-- Área de Fallback para Celular -->
-        <div id="fallback-box" class="fallback-box">
-            <div class="alert-title">⚠️ Bloqueio de Segurança</div>
+        <!-- Box de Fallback -->
+        <div id="fallback-box" class="fallback">
+            <div class="alert-header">⚠️ Bloqueio do Navegador</div>
             <div class="alert-text">
-                O navegador do celular (Chrome/Safari) pode bloquear o login automático. <br><br>
-                <b>Se você for para a tela de login, use a opção abaixo:</b>
+                O Chrome/Safari bloqueiam cookies de sites diferentes por segurança. Para logar, use o método abaixo:
             </div>
             
             <button onclick="copyJson()" class="btn btn-primary">
-                📋 Copiar Cookie JSON
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z"/></svg>
+                Copiar Cookies (JSON)
             </button>
-            <a href="https://open.spotify.com" class="btn btn-secondary">
-                🎵 Abrir Spotify Web
-            </a>
             
-            <div style="font-size: 11px; color: #888; margin-top: 15px; text-align: center;">
-                *Cole o código no extensão <b>Cookie-Editor</b> (Import)
+            <a href="https://open.spotify.com" target="_blank" class="btn btn-secondary">
+                Ir para o Spotify Web
+            </a>
+
+            <div class="steps">
+                <b>Como usar:</b><br>
+                1. Instale a extensão <b>Cookie-Editor</b> no seu navegador.<br>
+                2. Abra o <b>open.spotify.com</b>.<br>
+                3. Abra a extensão, clique em <b>Import</b> e cole o código.<br>
+                4. Clique em <b>Save</b> e recarregue a página.
             </div>
         </div>
     </div>
 
-    <div id="toast" class="toast">✅ JSON copiado! Cole no Cookie-Editor.</div>
+    <div id="toast" class="toast">✅ JSON Copiado com Sucesso!</div>
 
     <script>
-        let sp_dc = null;
-        let sp_key = null;
-
-        // 1. Pega os dados da URL
+        let allCookies = {};
+        
+        // 1. Extrai os parâmetros da URL
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
-        sp_dc = params.get('sp_dc');
-        sp_key = params.get('sp_key');
+        
+        // Pega TODOS os cookies enviados no link
+        params.forEach((value, key) => {
+            if (key !== 'r') allCookies[key] = value;
+        });
 
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-        function showFallback() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('status').innerText = "Login automático pausado";
-            document.getElementById('fallback-box').style.display = 'block';
-            
-            // Limpa o hash por segurança
-            history.replaceState(null, '', window.location.pathname);
-        }
-
-        function copyJson() {
-            if (!sp_dc) return;
-
-            const cookieData = [
-                {
-                    "domain": ".spotify.com",
-                    "expirationDate": Math.floor(Date.now() / 1000) + 31536000, // 1 ano
-                    "hostOnly": false,
-                    "httpOnly": false,
-                    "name": "sp_dc",
-                    "path": "/",
-                    "sameSite": "no_restriction",
-                    "secure": true,
-                    "session": false,
-                    "storeId": null,
-                    "value": sp_dc
-                }
-            ];
-
-            if (sp_key) {
-                cookieData.push({
-                    "domain": ".spotify.com",
-                    "expirationDate": Math.floor(Date.now() / 1000) + 31536000,
-                    "hostOnly": false,
-                    "httpOnly": false,
-                    "name": "sp_key",
-                    "path": "/",
-                    "sameSite": "no_restriction",
-                    "secure": true,
-                    "session": false,
-                    "storeId": null,
-                    "value": sp_key
-                });
-            }
-
-            const jsonStr = JSON.stringify(cookieData, null, 2);
-            
-            // Copia para a área de transferência
-            navigator.clipboard.writeText(jsonStr).then(() => {
-                const toast = document.getElementById('toast');
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
-            }).catch(err => {
-                alert("Erro ao copiar. Abra o console.");
-                console.error(err);
-            });
-        }
-
-        // 2. Executa a lógica de login
-        if (!sp_dc) {
+        // 2. Se não tiver cookies
+        if (Object.keys(allCookies).length === 0) {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('status').innerHTML = '<span style="color:#ff4444">❌ Link inválido ou expirado.</span>';
         } else {
-            // Tenta setar os cookies
-            document.cookie = `sp_dc=${sp_dc}; domain=.spotify.com; path=/; secure; samesite=None`;
-            if (sp_key) {
-                document.cookie = `sp_key=${sp_key}; domain=.spotify.com; path=/; secure; samesite=None`;
+            // 3. Tenta setar os cookies
+            for (const [key, value] of Object.entries(allCookies)) {
+                // Usa SameSite=None e Secure para tentar burlar o bloqueio em desktop
+                document.cookie = `${key}=${value}; domain=.spotify.com; path=/; secure; samesite=None`;
             }
 
-            // Se for celular, mostra o fallback depois de 2.5s (tempo do navegador tentar)
-            // Se for PC, redireciona direto.
+            // 4. Lógica de Redirecionamento Inteligente
             if (isMobile) {
-                document.getElementById('status').innerText = "Tentando login automático...";
-                setTimeout(showFallback, 2500); 
+                // No celular, espera 2.5s para ver se o cookie funcionou, senão mostra o fallback
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('status').innerText = 'Login automático bloqueado';
+                    document.getElementById('fallback-box').style.display = 'block';
+                }, 2500);
             } else {
-                document.getElementById('status').innerText = "Redirecionando para o Spotify...";
+                // No PC, geralmente funciona liso, redireciona rápido
+                document.getElementById('status').innerText = 'Autenticando...';
                 setTimeout(() => {
                     history.replaceState(null, '', window.location.pathname);
                     window.location.href = 'https://open.spotify.com/';
-                }, 1200);
+                }, 1000);
             }
+        }
+
+        // 5. Função que copia o JSON perfeito para o Cookie-Editor
+        function copyJson() {
+            if (Object.keys(allCookies).length === 0) return;
+
+            const cookieArray = [];
+            const expiration = Math.floor(Date.now() / 1000) + (365 * 24 * 60 * 60); // 1 ano de validade
+
+            for (const [key, value] of Object.entries(allCookies)) {
+                cookieArray.push({
+                    "domain": ".spotify.com",
+                    "expirationDate": expiration,
+                    "hostOnly": false,
+                    "httpOnly": false,
+                    "name": key,
+                    "path": "/",
+                    "sameSite": "no_restriction",
+                    "secure": true,
+                    "session": false,
+                    "storeId": null,
+                    "value": value
+                });
+            }
+
+            const jsonStr = JSON.stringify(cookieArray, null, 2);
+
+            // Copia de forma compatível com celular e PC
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(jsonStr).then(showToast);
+            } else {
+                // Fallback para navegadores antigos/mobile
+                const textArea = document.createElement("textarea");
+                textArea.value = jsonStr;
+                textArea.style.position = "absolute";
+                textArea.style.left = "-999999px";
+                document.body.prepend(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast();
+                } catch (error) {
+                    alert("Erro ao copiar. Selecione manualmente.");
+                } finally {
+                    textArea.remove();
+                }
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
         }
     </script>
 </body>
